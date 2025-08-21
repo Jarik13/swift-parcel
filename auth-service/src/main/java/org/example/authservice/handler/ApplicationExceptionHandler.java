@@ -54,12 +54,21 @@ public class ApplicationExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exp) {
         List<ErrorResponse.ValidationError> errors = new ArrayList<>();
 
-        exp.getBindingResult().getFieldErrors().forEach(error -> errors
-                .add(ErrorResponse.ValidationError.builder()
+        exp.getBindingResult().getFieldErrors().forEach(error -> errors.add(
+                ErrorResponse.ValidationError.builder()
                         .field(error.getField())
                         .code(error.getCode())
                         .message(error.getDefaultMessage())
-                        .build()));
+                        .build()
+        ));
+
+        exp.getBindingResult().getGlobalErrors().forEach(error -> errors.add(
+                ErrorResponse.ValidationError.builder()
+                        .field(error.getObjectName())
+                        .code(error.getCode())
+                        .message(error.getDefaultMessage())
+                        .build()
+        ));
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("VALIDATION_FAILED")
