@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.authservice.dto.auth.LoginRequest;
 import org.example.authservice.dto.auth.RegistrationRequest;
 import org.example.authservice.service.AuthService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,8 +34,14 @@ public class AuthController {
         return ResponseEntity.ok("Access token refreshed");
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletResponse response) {
+        authService.logout(response);
+        return ResponseEntity.ok("Logout successful");
+    }
+
     @GetMapping("/validate")
-    public ResponseEntity<String> validateToken(HttpServletRequest request) {
+    public ResponseEntity<Long> validateToken(HttpServletRequest request) {
         return ResponseEntity.ok(authService.validateToken(request));
     }
 }

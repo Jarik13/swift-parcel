@@ -33,7 +33,7 @@ public class JwtService {
         publicKey = KeyUtils.loadPublicKey("keys/local-only/public_key.pem");
     }
 
-    public String generateAccessToken(String email, String userId) {
+    public String generateAccessToken(String email, Long userId) {
         Map<String, Object> claims = Map.of(
                 TOKEN_TYPE, "access_token",
                 USER_ID, userId
@@ -41,7 +41,7 @@ public class JwtService {
         return buildToken(email, claims, accessTokenExpiration);
     }
 
-    public String generateRefreshToken(String email, String userId) {
+    public String generateRefreshToken(String email, Long userId) {
         Map<String, Object> claims = Map.of(
                 TOKEN_TYPE, "refresh_token",
                 USER_ID, userId
@@ -71,8 +71,8 @@ public class JwtService {
         return extractClaims(token).getSubject();
     }
 
-    public String extractUserId(String token) {
-        return extractClaims(token).get(USER_ID, String.class);
+    public Long extractUserId(String token) {
+        return extractClaims(token).get(USER_ID, Long.class);
     }
 
 

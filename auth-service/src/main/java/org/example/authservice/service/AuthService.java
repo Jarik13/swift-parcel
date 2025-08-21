@@ -10,5 +10,7 @@ public interface AuthService {
     void login(LoginRequest request, HttpServletResponse response);
     void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
-    String validateToken(HttpServletRequest request);
+    void logout(HttpServletResponse response);
+
+    Long validateToken(HttpServletRequest request);
 }

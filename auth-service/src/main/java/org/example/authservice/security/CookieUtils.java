@@ -17,24 +17,14 @@ public class CookieUtils {
     @Value("${app.security.jwt.refresh-token-expiration}")
     private Long refreshTokenExpiration;
 
-    public void addJwtCookies(HttpServletResponse response,
-                              String accessToken,
-                              String refreshToken) {
+    public void addAccessTokenCookie(HttpServletResponse response, String accessToken) {
+        Cookie cookie = createCookie(ACCESS_TOKEN_COOKIE, accessToken, accessTokenExpiration);
+        response.addCookie(cookie);
+    }
 
-        Cookie accessCookie = new Cookie(ACCESS_TOKEN_COOKIE, accessToken);
-        accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
-        accessCookie.setPath("/");
-        accessCookie.setMaxAge(accessTokenExpiration.intValue());
-
-        Cookie refreshCookie = new Cookie(REFRESH_TOKEN_COOKIE, refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/");
-        refreshCookie.setMaxAge(refreshTokenExpiration.intValue());
-
-        response.addCookie(accessCookie);
-        response.addCookie(refreshCookie);
+    public void addRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = createCookie(REFRESH_TOKEN_COOKIE, refreshToken, refreshTokenExpiration);
+        response.addCookie(cookie);
     }
 
     public String getAccessToken(HttpServletRequest request) {
@@ -43,6 +33,25 @@ public class CookieUtils {
 
     public String getRefreshToken(HttpServletRequest request) {
         return getCookieValue(request, REFRESH_TOKEN_COOKIE);
+    }
+
+    public void clearAccessTokenCookie(HttpServletResponse response) {
+        Cookie cookie = createCookie(ACCESS_TOKEN_COOKIE, null, 0L);
+        response.addCookie(cookie);
+    }
+
+    public void clearRefreshTokenCookie(HttpServletResponse response) {
+        Cookie cookie = createCookie(REFRESH_TOKEN_COOKIE, null, 0L);
+        response.addCookie(cookie);
+    }
+
+    private Cookie createCookie(String name, String value, Long maxAgeMillis) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge((int) (maxAgeMillis / 1000));
+        return cookie;
     }
 
     private String getCookieValue(HttpServletRequest request, String name) {

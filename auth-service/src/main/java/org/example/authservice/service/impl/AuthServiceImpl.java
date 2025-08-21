@@ -37,10 +37,11 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        cookieUtils.addJwtCookies(
-                response,
-                jwtService.generateAccessToken(user.getEmail(), user.getId().toString()),
-                jwtService.generateRefreshToken(user.getEmail(), user.getId().toString())
+        cookieUtils.addAccessTokenCookie(response,
+                jwtService.generateAccessToken(user.getEmail(), user.getId())
+        );
+        cookieUtils.addRefreshTokenCookie(response,
+                jwtService.generateRefreshToken(user.getEmail(), user.getId())
         );
     }
 
@@ -52,10 +53,11 @@ public class AuthServiceImpl implements AuthService {
         var user = userRepository.findByEmailIgnoreCase(request.email())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        cookieUtils.addJwtCookies(
-                response,
-                jwtService.generateAccessToken(user.getEmail(), user.getId().toString()),
-                jwtService.generateRefreshToken(user.getEmail(), user.getId().toString())
+        cookieUtils.addAccessTokenCookie(response,
+                jwtService.generateAccessToken(user.getEmail(), user.getId())
+        );
+        cookieUtils.addRefreshTokenCookie(response,
+                jwtService.generateRefreshToken(user.getEmail(), user.getId())
         );
     }
 
@@ -66,15 +68,20 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Refresh token missing");
         }
 
-        cookieUtils.addJwtCookies(
-                response,
-                jwtService.refreshAccessToken(refreshToken),
-                refreshToken
+        cookieUtils.addAccessTokenCookie(response,
+                jwtService.refreshAccessToken(refreshToken)
         );
+        cookieUtils.addRefreshTokenCookie(response, refreshToken);
     }
 
     @Override
-    public String validateToken(HttpServletRequest request) {
+    public void logout(HttpServletResponse response) {
+        cookieUtils.clearAccessTokenCookie(response);
+        cookieUtils.clearRefreshTokenCookie(response);
+    }
+
+    @Override
+    public Long validateToken(HttpServletRequest request) {
         String accessToken = cookieUtils.getAccessToken(request);
         if (accessToken != null && jwtService.isTokenValid(accessToken, jwtService.extractEmail(accessToken))) {
             return jwtService.extractUserId(accessToken);
