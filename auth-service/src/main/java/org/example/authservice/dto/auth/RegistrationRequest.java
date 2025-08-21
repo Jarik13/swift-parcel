@@ -1,11 +1,15 @@
 package org.example.authservice.dto.auth;
 
 import jakarta.validation.constraints.*;
+import org.example.authservice.annotation.PasswordMatches;
+import org.example.authservice.annotation.UniqueEmail;
 
+@PasswordMatches
 public record RegistrationRequest(
         @NotBlank(message = "Full name must not be empty")
         String fullName,
 
+        @UniqueEmail
         @NotBlank(message = "Email must not be empty")
         @Email(message = "Email should be valid")
         String email,
