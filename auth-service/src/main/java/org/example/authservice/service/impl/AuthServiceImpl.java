@@ -72,4 +72,13 @@ public class AuthServiceImpl implements AuthService {
                 refreshToken
         );
     }
+
+    @Override
+    public String validateToken(HttpServletRequest request) {
+        String accessToken = cookieUtils.getAccessToken(request);
+        if (accessToken != null && jwtService.isTokenValid(accessToken, jwtService.extractEmail(accessToken))) {
+            return jwtService.extractUserId(accessToken);
+        }
+        throw new BusinessException(ErrorCode.INVALID_TOKEN);
+    }
 }

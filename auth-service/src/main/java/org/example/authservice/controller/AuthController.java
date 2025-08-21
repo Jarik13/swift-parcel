@@ -7,11 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.authservice.dto.auth.LoginRequest;
 import org.example.authservice.dto.auth.RegistrationRequest;
 import org.example.authservice.service.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -35,5 +33,10 @@ public class AuthController {
     public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         authService.refreshToken(request, response);
         return ResponseEntity.ok("Access token refreshed");
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<String> validateToken(HttpServletRequest request) {
+        return ResponseEntity.ok(authService.validateToken(request));
     }
 }

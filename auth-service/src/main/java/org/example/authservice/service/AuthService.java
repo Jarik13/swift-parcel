@@ -9,4 +9,6 @@ public interface AuthService {
     void register(RegistrationRequest request, HttpServletResponse response);
     void login(LoginRequest request, HttpServletResponse response);
     void refreshToken(HttpServletRequest request, HttpServletResponse response);
+
+    String validateToken(HttpServletRequest request);
 }
