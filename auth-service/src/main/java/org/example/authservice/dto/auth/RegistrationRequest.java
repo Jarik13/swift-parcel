@@ -2,14 +2,9 @@ package org.example.authservice.dto.auth;
 
 import jakarta.validation.constraints.*;
 
-import java.time.LocalDate;
-
 public record RegistrationRequest(
-        @NotBlank(message = "First name must not be empty")
-        String firstName,
-
-        @NotBlank(message = "Last name must not be empty")
-        String lastName,
+        @NotBlank(message = "Full name must not be empty")
+        String fullName,
 
         @NotBlank(message = "Email must not be empty")
         @Email(message = "Email should be valid")
@@ -22,14 +17,6 @@ public record RegistrationRequest(
         String password,
 
         @NotBlank(message = "Confirm password must not be empty")
-        String confirmPassword,
-
-        @NotBlank(message = "Phone number must not be empty")
-        @Pattern(regexp = "^\\+?[0-9]{10,13}$", message = "Phone number must be between 10 and 13 digits and may start with +")
-        String phoneNumber,
-
-        @NotNull(message = "Date of birth must not be null")
-        @Past(message = "Date of birth must be in the past")
-        LocalDate dateOfBirth
+        String confirmPassword
 ) {
 }
