@@ -1,6 +1,21 @@
 version: "3.9"
 
 services:
+  ### API Gateway
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:4001
+    depends_on:
+      - auth-service
+    networks:
+      - swift-network
+
   ### Auth Service
   auth-service:
     container_name: auth-service
