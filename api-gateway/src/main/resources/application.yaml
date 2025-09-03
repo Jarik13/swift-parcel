@@ -8,11 +8,15 @@ spring:
         webflux:
           routes:
             - id: auth-service-route
-              uri: http://auth-service:4001
+              uri: lb://auth-service
               predicates:
                 - Path=/auth/**, /oauth2/**, /login/oauth2/**
               filters:
                 - StripPrefix=0
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
 
 server:
   port: 4000
