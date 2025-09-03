@@ -1,6 +1,17 @@
 version: "3.9"
 
 services:
+  ### Discovery Service
+  discovery-service:
+    container_name: discovery-service
+    build:
+      context: ./discovery-service
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - swift-network
+
   ### API Gateway
   api-gateway:
     container_name: api-gateway
@@ -10,9 +21,10 @@ services:
     ports:
       - "4000:4000"
     environment:
-      AUTH_SERVICE_URL: http://auth-service:4001
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
     depends_on:
       - auth-service
+      - discovery-service
     networks:
       - swift-network
 
@@ -28,8 +40,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/auth-service-db
       SPRING_DATASOURCE_USERNAME: username
       SPRING_DATASOURCE_PASSWORD: password
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
     depends_on:
       - auth-db
+      - discovery-service
     networks:
       - swift-network
 
